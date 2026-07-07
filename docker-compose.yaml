@@ -1,0 +1,16 @@
+services:
+  postgres:
+    image: postgres:17
+    container_name: timetable-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: timetable
+      POSTGRES_USER: timetable
+      POSTGRES_PASSWORD: timetable123
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:

@@ -9,7 +9,7 @@ const DATASET_META = {
   teachers: { label: "Teachers", cols: [
     { key: "code", label: "Code" }, { key: "name", label: "Name" },
     { key: "email", label: "Email" }, { key: "phone", label: "Phone" },
-    { key: "department_id", label: "Department ID" },
+    { key: "department_id", label: "Department", type: "ref", ref: "departments" },
     { key: "max_periods_per_day", label: "Max/Day", type: "number" },
     { key: "max_periods_per_week", label: "Max/Week", type: "number" },
     { key: "is_active", label: "Active", type: "boolean" },
@@ -18,14 +18,14 @@ const DATASET_META = {
     { key: "code", label: "Code" }, { key: "name", label: "Name" },
     { key: "weekly_periods", label: "Weekly Periods", type: "number" },
     { key: "is_lab", label: "Is Lab", type: "boolean" },
-    { key: "department_id", label: "Department ID" },
+    { key: "department_id", label: "Department", type: "ref", ref: "departments" },
   ]},
   classes: { label: "Classes", cols: [
     { key: "code", label: "Code" }, { key: "name", label: "Name" },
     { key: "grade_level", label: "Grade Level", type: "number" },
   ]},
   sections: { label: "Sections", cols: [
-    { key: "class_id", label: "Class ID" },
+    { key: "class_id", label: "Class", type: "ref", ref: "classes" },
     { key: "code", label: "Code" }, { key: "name", label: "Name" },
     { key: "strength", label: "Strength", type: "number" },
   ]},
@@ -38,15 +38,15 @@ const DATASET_META = {
     { key: "code", label: "Code" }, { key: "name", label: "Name" },
   ]},
   teacher_mapping: { label: "Teacher Mapping", cols: [
-    { key: "teacher_id", label: "Teacher ID" },
-    { key: "subject_id", label: "Subject ID" },
-    { key: "class_id", label: "Class ID" },
-    { key: "section_id", label: "Section ID" },
+    { key: "teacher_id", label: "Teacher", type: "ref", ref: "teachers" },
+    { key: "subject_id", label: "Subject", type: "ref", ref: "subjects" },
+    { key: "class_id", label: "Class", type: "ref", ref: "classes" },
+    { key: "section_id", label: "Section", type: "ref", ref: "sections" },
     { key: "periods_per_week", label: "Periods/Week", type: "number" },
   ]},
   weekly_priority: { label: "Weekly Priority", cols: [
-    { key: "subject_id", label: "Subject ID" },
-    { key: "class_id", label: "Class ID" },
+    { key: "subject_id", label: "Subject", type: "ref", ref: "subjects" },
+    { key: "class_id", label: "Class", type: "ref", ref: "classes" },
     { key: "priority", label: "Priority", type: "number" },
     { key: "min_periods", label: "Min", type: "number" },
     { key: "max_periods", label: "Max", type: "number" },
@@ -82,6 +82,36 @@ export default function MasterData() {
   const [err, setErr] = useState("");
   const [historyIdx, setHistoryIdx] = useState(0);
   const historyRef = useRef([]);
+  const [refData, setRefData] = useState({}); // datasetName -> rows, for "ref" columns
+
+  const loadRefData = useCallback(async () => {
+    if (!meta) return;
+    const refDatasets = Array.from(new Set(meta.cols.filter((c) => c.type === "ref").map((c) => c.ref)));
+    if (refDatasets.length === 0) { setRefData({}); return; }
+    try {
+      const entries = await Promise.all(refDatasets.map(async (ds) => {
+        const { data } = await api.get(`/api/projects/${projectId}/data/${ds}`, { params: { limit: 5000 } });
+        return [ds, data.rows];
+      }));
+      setRefData(Object.fromEntries(entries));
+    } catch (e) { /* dropdowns will fall back to raw ids */ }
+  }, [projectId, meta]);
+
+  useEffect(() => { loadRefData(); }, [loadRefData]);
+
+  const refOptionLabel = (row) => {
+    if (!row) return "";
+    const code = row.code ?? "";
+    const name = row.name ?? "";
+    if (code && name) return `${code} — ${name}`;
+    return name || code || row.id;
+  };
+
+  const refLabel = (refDataset, id) => {
+    if (!id) return "";
+    const row = (refData[refDataset] || []).find((r) => r.id === id);
+    return row ? refOptionLabel(row) : id;
+  };
 
   const load = useCallback(async () => {
     if (!meta) return;
@@ -234,7 +264,7 @@ export default function MasterData() {
         )}
         <button data-testid="copy-btn" className="ribbon-button" onClick={copySelection} disabled={selected.size === 0}>Copy</button>
         <div className="w-px h-6 bg-neutral-300 mx-1" />
-        <button className="ribbon-button" onClick={load}><RefreshCw className="w-3.5 h-3.5" /> Reload</button>
+        <button className="ribbon-button" onClick={() => { load(); loadRefData(); }}><RefreshCw className="w-3.5 h-3.5" /> Reload</button>
         <div className="flex-1" />
         <div className="relative">
           <Search className="w-3.5 h-3.5 absolute left-2 top-1/2 -translate-y-1/2 text-neutral-500" />
@@ -320,6 +350,18 @@ export default function MasterData() {
                                 <option value="true">true</option>
                                 <option value="false">false</option>
                               </select>
+                            ) : c.type === "ref" ? (
+                              <select
+                                autoFocus
+                                defaultValue={val ?? ""}
+                                onChange={(e) => { applyEdit(rowId, c.key, e.target.value || null); setEditCell(null); }}
+                                onBlur={() => setEditCell(null)}
+                              >
+                                <option value="">—</option>
+                                {(refData[c.ref] || []).map((r) => (
+                                  <option key={r.id} value={r.id}>{refOptionLabel(r)}</option>
+                                ))}
+                              </select>
                             ) : (
                               <input
                                 autoFocus
@@ -334,7 +376,7 @@ export default function MasterData() {
                             )
                           ) : (
                             <span className={c.type === "number" ? "font-mono" : ""}>{
-                              c.type === "boolean" ? (val ? "✓" : "") : String(val ?? "")
+                              c.type === "boolean" ? (val ? "✓" : "") : c.type === "ref" ? refLabel(c.ref, val) : String(val ?? "")
                             }</span>
                           )}
                         </td>
