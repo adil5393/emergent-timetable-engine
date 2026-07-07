@@ -1,0 +1,94 @@
+{
+  "theme": "LIGHT",
+  "archetype": "4 (Swiss & High-Contrast)",
+  "design_philosophy": "Information-dense, professional workstation aesthetic. Clean architecture, speed, clarity, large datasets. Think Microsoft Excel combined with modern SaaS scheduling software. Avoid marketing-page vibes, prioritize high tabular density.",
+  "typography": {
+    "fonts": {
+      "headings": "Chivo",
+      "body": "IBM Plex Sans",
+      "mono": "JetBrains Mono"
+    },
+    "scale": {
+      "h1": "text-2xl font-black tracking-tight text-primary",
+      "h2": "text-xl font-bold tracking-tight text-primary",
+      "h3": "text-lg font-bold tracking-tight text-primary",
+      "h4": "text-base font-semibold text-primary",
+      "body": "text-sm text-muted-foreground leading-relaxed",
+      "small": "text-xs text-muted-foreground",
+      "overline": "text-xs font-bold uppercase tracking-[0.2em] text-muted-foreground"
+    },
+    "rules": "Never use Inter or Roboto for headings. Keep typography tight and functional. Use JetBrains Mono for numeric or tabular data where alignment is crucial."
+  },
+  "colors": {
+    "palette": {
+      "background": "#FFFFFF",
+      "surface": "#F5F5F5",
+      "surface_hover": "#E5E5E5",
+      "border": "#D4D4D4",
+      "primary": "#0A0A0A",
+      "primary_hover": "#262626",
+      "accent": "#0F172A",
+      "accent_hover": "#1E293B",
+      "text_main": "#000000",
+      "text_muted": "#525252",
+      "error": "#DC2626",
+      "error_bg": "#FEF2F2",
+      "warning": "#D97706",
+      "warning_bg": "#FFFBEB",
+      "success": "#16A34A",
+      "success_bg": "#F0FDF4",
+      "info": "#2563EB",
+      "info_bg": "#EFF6FF"
+    },
+    "rules": "Monochrome dominance. Color is function only. 95% of UI should be monochrome, utilizing pure white background and off-white/gray surfaces to define layout boundaries. Contrast ratios must meet APCA standards."
+  },
+  "layout_and_spacing": {
+    "strategy": "The 'Control Room' Grid",
+    "spacing_scale": "Extremely dense. Prefer p-1, p-2, p-4. Drop generous spacing in favor of data density.",
+    "borders": "Expose the skeleton. Use 1px solid borders (border-border) for technical look. Use border-collapse on tables.",
+    "border_radius": "rounded-none or rounded-sm (max 4px). Avoid overly rounded, playful UI elements.",
+    "surfaces": "Grid Borders variant. Use light gray surfaces for sidebars and toolbars, pure white for content panes."
+  },
+  "components": {
+    "buttons": "Square or rounded-sm. High contrast. Primary buttons: bg-primary text-white hover:bg-primary-hover. Use secondary buttons for utility actions.",
+    "cards": "Go cardless or use strictly rectangular components with 1px border. No soft shadows. No glassmorphism in main data areas.",
+    "tables_and_grids": "CRITICAL: Excel-like density. padding-y 4px (p-1), padding-x 8px (p-2). Sticky headers with solid background (bg-surface). 1px borders on all cells. Hover states on rows. Support keyboard navigation.",
+    "forms": "High density forms. Small inputs (h-8), small labels. Left-aligned inputs.",
+    "navigation": "Sidebar with condensed links, Lucide icons on left. Top ribbon/toolbar for contextual actions, similar to Excel.",
+    "modals_drawers": "Use sliding drawers for complex edits without leaving the grid context. Use modals strictly for alerts or short inputs.",
+    "icons": "Use lucide-react. Keep sizes small (w-4 h-4) to match dense typography."
+  },
+  "motion": {
+    "enabled": true,
+    "rules": "Minimalist micro-interactions. Fast transitions (150ms). No bouncy or slow animations. Hover states on all interactive elements. Data editing should feel instantaneous."
+  },
+  "accessibility_and_testing": {
+    "testing_attributes": "All interactive and key informational elements MUST include a data-testid attribute in kebab-case, role-based (e.g., data-testid='import-wizard-next-button', data-testid='timetable-cell-1-1').",
+    "focus_states": "High contrast focus rings. focus:ring-2 focus:ring-primary focus:ring-offset-2."
+  },
+  "media": {
+    "image_urls": [
+      {
+        "category": "user_avatar_1",
+        "url": "https://images.pexels.com/photos/20157010/pexels-photo-20157010.jpeg",
+        "description": "Elegant portrait of a young male professional."
+      },
+      {
+        "category": "user_avatar_2",
+        "url": "https://images.pexels.com/photos/14230741/pexels-photo-14230741.jpeg",
+        "description": "Portrait of a confident Asian man adjusting tie."
+      }
+    ],
+    "rules": "Use Lucide React icons for the application logo (e.g., Grid, Calendar, or Table icon). Avoid image-based logos. Use provided avatars for logged-in users."
+  },
+  "instructions_to_main_agent": [
+    "Build the UI focusing heavily on architecture, state management, and spreadsheet-like interactions.",
+    "Ensure all components use .js (JavaScript) instead of .tsx (TypeScript).",
+    "Use Shadcn UI extensively but override default margins/paddings to make it look dense, like an Excel workstation.",
+    "Implement horizontal and vertical scrolling for the Timetable Editor grid, with sticky row/column headers.",
+    "Use Lucide-react for all iconography.",
+    "Use pure HTML table or a specialized grid component (like a highly customized div grid with standard borders) for the Timetable Editor.",
+    "Implement the 'Validation Center' as a persistent dock or side panel that updates when master data changes.",
+    "Implement 'data-testid' on every button, input, table cell, and navigation link."
+  ]
+}
