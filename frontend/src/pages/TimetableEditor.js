@@ -43,15 +43,14 @@ export default function TimetableEditor() {
       setSubjects(mds[1].data.rows);
       setClasses(mds[2].data.rows);
       setRooms(mds[3].data.rows);
-      if (mds[2].data.rows.length && !selectedClass) setSelectedClass(mds[2].data.rows[0].id);
+      const firstClassId = mds[2].data.rows[0]?.id;
+      if (firstClassId) setSelectedClass((cur) => cur || firstClassId);
     } catch (e) { setErr(formatError(e)); }
     finally { setLoading(false); }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [projectId, timetableId]);
 
   useEffect(() => { load(); }, [load]);
 
-  const project = tt?.project_id;
   const [projectMeta, setProjectMeta] = useState({ working_days: 5, periods_per_day: 8 });
   useEffect(() => {
     if (projectId) api.get(`/api/projects/${projectId}`).then(({ data }) => setProjectMeta(data));
@@ -165,10 +164,10 @@ export default function TimetableEditor() {
             >
               <div className="tt-cell header">Period</div>
               {Array.from({ length: days }).map((_, d) => (
-                <div key={d} className="tt-cell header">{DAY_NAMES[d]}</div>
+                <div key={`day-${d}`} className="tt-cell header">{DAY_NAMES[d]}</div>
               ))}
               {Array.from({ length: periods }).map((_, p) => (
-                <React.Fragment key={p}>
+                <React.Fragment key={`period-${p}`}>
                   <div className="tt-cell header">P{p + 1}</div>
                   {Array.from({ length: days }).map((_, d) => {
                     const key = `${d}-${p + 1}`;
@@ -251,7 +250,7 @@ export default function TimetableEditor() {
                 <div className="text-[10px] font-bold uppercase tracking-[0.2em] text-neutral-500 mb-2">Conflicts ({conflicts.length})</div>
                 <div className="space-y-1 max-h-64 overflow-auto">
                   {conflicts.map((c, i) => (
-                    <div key={i} className="text-xs bg-red-50 border border-red-200 p-2">
+                    <div key={`${c.type}-${c.day}-${c.period}-${i}`} className="text-xs bg-red-50 border border-red-200 p-2">
                       <div className="font-semibold text-red-800">{c.type.replace(/_/g, " ")}</div>
                       <div className="font-mono text-neutral-600">{DAY_NAMES[c.day]} · P{c.period}</div>
                     </div>

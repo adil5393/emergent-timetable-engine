@@ -186,7 +186,7 @@ export default function ImportWizard({ projectId, datasetType, onClose }) {
                   </thead>
                   <tbody>
                     {preview.rows.map((row, i) => (
-                      <tr key={i}>
+                      <tr key={`preview-${i}-${row[preview.columns[0]] ?? ""}`}>
                         {preview.columns.map((c) => (
                           <td key={c} className="font-mono text-xs">{String(row[c] ?? "")}</td>
                         ))}
@@ -240,7 +240,7 @@ export default function ImportWizard({ projectId, datasetType, onClose }) {
               {result.errors && result.errors.length > 0 && (
                 <div className="mt-4 max-h-40 overflow-auto text-left border border-neutral-300 p-2 text-xs font-mono">
                   {result.errors.slice(0, 50).map((e, i) => (
-                    <div key={i}>Row {e.row}: {e.error}</div>
+                    <div key={`err-${e.row}-${i}`}>Row {e.row}: {e.error}</div>
                   ))}
                 </div>
               )}

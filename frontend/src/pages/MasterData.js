@@ -177,7 +177,11 @@ export default function MasterData() {
     const selectedRows = displayRows.filter((r) => selected.has(r.id || r._id));
     if (selectedRows.length === 0) return;
     const tsv = selectedRows.map((r) => meta.cols.map((c) => r[c.key] ?? "").join("\t")).join("\n");
-    try { await navigator.clipboard.writeText(tsv); } catch {}
+    try {
+      await navigator.clipboard.writeText(tsv);
+    } catch (e) {
+      setErr("Copy to clipboard was blocked by the browser. Grant clipboard permission and try again.");
+    }
   };
 
   // Paste TSV into rows starting at current selection

@@ -10,6 +10,7 @@ from __future__ import annotations
 from typing import Any, Dict, List
 
 from fastapi import APIRouter, Depends, HTTPException, Query
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from auth import get_current_user, require_editor
@@ -107,12 +108,15 @@ def create_record(
     payload["project_id"] = project_id
     try:
         obj = model(**payload)
+    except TypeError as e:
+        raise HTTPException(400, str(e))
+    try:
         db.add(obj)
         db.commit()
         db.refresh(obj)
-    except TypeError as e:
+    except IntegrityError as e:
         db.rollback()
-        raise HTTPException(400, str(e))
+        raise HTTPException(400, f"Constraint violated: {e.orig}")
     return _to_dict(obj)
 
 
@@ -136,8 +140,12 @@ def update_record(
     for k, v in payload.items():
         if k in columns:
             setattr(obj, k, v)
-    db.commit()
-    db.refresh(obj)
+    try:
+        db.commit()
+        db.refresh(obj)
+    except IntegrityError as e:
+        db.rollback()
+        raise HTTPException(400, f"Constraint violated: {e.orig}")
     return _to_dict(obj)
 
 

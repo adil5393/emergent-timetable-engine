@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import api, { formatError } from "@/api/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -14,7 +14,7 @@ export default function ImportDashboard() {
   const [wizardDataset, setWizardDataset] = useState(null);
   const [project, setProject] = useState(null);
 
-  const load = async () => {
+  const load = useCallback(async () => {
     setLoading(true);
     try {
       const [{ data: sum }, { data: proj }] = await Promise.all([
@@ -25,9 +25,9 @@ export default function ImportDashboard() {
       setProject(proj);
     } catch (e) { setErr(formatError(e)); }
     finally { setLoading(false); }
-  };
+  }, [projectId]);
 
-  useEffect(() => { load(); }, [projectId]);
+  useEffect(() => { load(); }, [load]);
 
   const handleImportAgain = (ds) => setWizardDataset(ds);
   const handleWizardClose = (refresh) => {

@@ -18,9 +18,9 @@ export default function ExportsPage() {
       ]);
       setVersions(v.data);
       setReports(r.data);
-      if (v.data.length && !version) setVersion(v.data[0].id);
+      const firstVersionId = v.data[0]?.id;
+      if (firstVersionId) setVersion((cur) => cur || firstVersionId);
     } catch (e) { setErr(formatError(e)); }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [projectId]);
 
   useEffect(() => { load(); }, [load]);
