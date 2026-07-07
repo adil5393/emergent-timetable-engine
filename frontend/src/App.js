@@ -1,55 +1,63 @@
-import { useEffect } from "react";
+import React from "react";
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import "@/App.css";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import axios from "axios";
-import { HOME } from "@/constants/testIds";
+import { AuthProvider, useAuth } from "@/contexts/AuthContext";
+import LoginPage from "@/pages/Login";
+import ProjectsPage from "@/pages/Projects";
+import AppShell from "@/layouts/AppShell";
+import ImportDashboard from "@/pages/ImportDashboard";
+import MasterData from "@/pages/MasterData";
+import ValidationCenter from "@/pages/ValidationCenter";
+import GeneratePage from "@/pages/GeneratePage";
+import TimetableEditor from "@/pages/TimetableEditor";
+import ExportsPage from "@/pages/ExportsPage";
+import { Toaster } from "sonner";
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
-
-const Home = () => {
-  const helloWorldApi = async () => {
-    try {
-      const response = await axios.get(`${API}/`);
-      console.log(response.data.message);
-    } catch (e) {
-      console.error(e, `errored out requesting / api`);
-    }
-  };
-
-  useEffect(() => {
-    helloWorldApi();
-  }, []);
-
-  return (
-    <div>
-      <header className="App-header">
-        <a
-          data-testid={HOME.emergentLink}
-          className="App-link"
-          href="https://emergent.sh"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <img src="https://avatars.githubusercontent.com/in/1201222?s=120&u=2686cf91179bbafbc7a71bfbc43004cf9ae1acea&v=4" />
-        </a>
-        <p className="mt-5">Building something incredible ~!</p>
-      </header>
-    </div>
-  );
-};
+function RequireAuth({ children }) {
+  const { user, status } = useAuth();
+  const loc = useLocation();
+  if (status === "checking") {
+    return <div className="min-h-screen flex items-center justify-center text-sm text-neutral-500">Loading…</div>;
+  }
+  if (!user) return <Navigate to="/login" replace state={{ from: loc }} />;
+  return children;
+}
 
 function App() {
   return (
-    <div className="App">
+    <AuthProvider>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Home />}>
-            <Route index element={<Home />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route
+            path="/"
+            element={
+              <RequireAuth>
+                <ProjectsPage />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/projects/:projectId"
+            element={
+              <RequireAuth>
+                <AppShell />
+              </RequireAuth>
+            }
+          >
+            <Route index element={<Navigate to="import" replace />} />
+            <Route path="import" element={<ImportDashboard />} />
+            <Route path="data/:dataset" element={<MasterData />} />
+            <Route path="validation" element={<ValidationCenter />} />
+            <Route path="generate" element={<GeneratePage />} />
+            <Route path="timetables/:timetableId" element={<TimetableEditor />} />
+            <Route path="exports" element={<ExportsPage />} />
           </Route>
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </BrowserRouter>
-    </div>
+      <Toaster position="bottom-right" richColors closeButton />
+    </AuthProvider>
   );
 }
 

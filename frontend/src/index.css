@@ -1,115 +1,297 @@
+/* Timetable Management System - Global styles.
+   Swiss / High-contrast workstation aesthetic.
+*/
+@import url('https://fonts.googleapis.com/css2?family=Chivo:wght@400;600;700;900&family=IBM+Plex+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 0 0% 3.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 3.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 3.9%;
+    --primary: 0 0% 4%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 0 0% 96.1%;
+    --secondary-foreground: 0 0% 9%;
+    --muted: 0 0% 96.1%;
+    --muted-foreground: 0 0% 32%;
+    --accent: 0 0% 96.1%;
+    --accent-foreground: 0 0% 9%;
+    --destructive: 0 84% 45%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 83%;
+    --input: 0 0% 89.8%;
+    --ring: 0 0% 3.9%;
+    --radius: 2px;
+    --surface: 0 0% 96%;
+    --surface-hover: 0 0% 90%;
+    --success: 142 71% 32%;
+    --warning: 32 95% 40%;
+    --info: 217 91% 45%;
+  }
+}
+
+* {
+  border-color: hsl(var(--border));
+}
+
 body {
-    margin: 0;
-    font-family:
-        -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
-        "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
-        sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+  margin: 0;
+  font-family: 'IBM Plex Sans', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: hsl(var(--background));
+  color: hsl(var(--foreground));
+  font-size: 13px;
+  line-height: 1.45;
 }
 
-code {
-    font-family:
-        source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Chivo', 'IBM Plex Sans', sans-serif;
+  letter-spacing: -0.01em;
 }
 
-@layer base {
-    :root {
-        --background: 0 0% 100%;
-        --foreground: 0 0% 3.9%;
-        --card: 0 0% 100%;
-        --card-foreground: 0 0% 3.9%;
-        --popover: 0 0% 100%;
-        --popover-foreground: 0 0% 3.9%;
-        --primary: 0 0% 9%;
-        --primary-foreground: 0 0% 98%;
-        --secondary: 0 0% 96.1%;
-        --secondary-foreground: 0 0% 9%;
-        --muted: 0 0% 96.1%;
-        --muted-foreground: 0 0% 45.1%;
-        --accent: 0 0% 96.1%;
-        --accent-foreground: 0 0% 9%;
-        --destructive: 0 84.2% 60.2%;
-        --destructive-foreground: 0 0% 98%;
-        --border: 0 0% 89.8%;
-        --input: 0 0% 89.8%;
-        --ring: 0 0% 3.9%;
-        --chart-1: 12 76% 61%;
-        --chart-2: 173 58% 39%;
-        --chart-3: 197 37% 24%;
-        --chart-4: 43 74% 66%;
-        --chart-5: 27 87% 67%;
-        --radius: 0.5rem;
-    }
-    .dark {
-        --background: 0 0% 3.9%;
-        --foreground: 0 0% 98%;
-        --card: 0 0% 3.9%;
-        --card-foreground: 0 0% 98%;
-        --popover: 0 0% 3.9%;
-        --popover-foreground: 0 0% 98%;
-        --primary: 0 0% 98%;
-        --primary-foreground: 0 0% 9%;
-        --secondary: 0 0% 14.9%;
-        --secondary-foreground: 0 0% 98%;
-        --muted: 0 0% 14.9%;
-        --muted-foreground: 0 0% 63.9%;
-        --accent: 0 0% 14.9%;
-        --accent-foreground: 0 0% 98%;
-        --destructive: 0 62.8% 30.6%;
-        --destructive-foreground: 0 0% 98%;
-        --border: 0 0% 14.9%;
-        --input: 0 0% 14.9%;
-        --ring: 0 0% 83.1%;
-        --chart-1: 220 70% 50%;
-        --chart-2: 160 60% 45%;
-        --chart-3: 30 80% 55%;
-        --chart-4: 280 65% 60%;
-        --chart-5: 340 75% 55%;
-    }
+.font-mono, code, pre {
+  font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 }
 
-@layer base {
-    * {
-        @apply border-border;
-    }
-    body {
-        @apply bg-background text-foreground;
-    }
+/* Excel-like grid ---------------------------------------------- */
+.tt-grid {
+  border-collapse: collapse;
+  width: 100%;
+  font-variant-numeric: tabular-nums;
+}
+.tt-grid th,
+.tt-grid td {
+  border: 1px solid hsl(var(--border));
+  padding: 4px 8px;
+  text-align: left;
+  vertical-align: middle;
+  background: white;
+  font-size: 12.5px;
+}
+.tt-grid thead th {
+  background: hsl(var(--surface));
+  font-weight: 600;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  color: #000;
+}
+.tt-grid tbody tr:hover td {
+  background: hsl(var(--surface));
+}
+.tt-grid td.selected {
+  outline: 2px solid #000;
+  outline-offset: -2px;
+  background: #fef9c3 !important;
+}
+.tt-grid td.editing input {
+  width: 100%;
+  padding: 3px 6px;
+  border: 2px solid #000;
+  outline: none;
+  font: inherit;
+  background: white;
+}
+.tt-grid .row-idx {
+  background: hsl(var(--surface));
+  color: hsl(var(--muted-foreground));
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  width: 44px;
+  user-select: none;
+  position: sticky;
+  left: 0;
+  z-index: 1;
+}
+.tt-grid tbody tr.selected .row-idx {
+  background: #e5e5e5;
+  color: #000;
+  font-weight: 600;
 }
 
-@layer base {
-    [data-debug-wrapper="true"] {
-        display: contents !important;
-    }
-
-    [data-debug-wrapper="true"] > * {
-        margin-left: inherit;
-        margin-right: inherit;
-        margin-top: inherit;
-        margin-bottom: inherit;
-        padding-left: inherit;
-        padding-right: inherit;
-        padding-top: inherit;
-        padding-bottom: inherit;
-        column-gap: inherit;
-        row-gap: inherit;
-        gap: inherit;
-        border-left-width: inherit;
-        border-right-width: inherit;
-        border-top-width: inherit;
-        border-bottom-width: inherit;
-        border-left-style: inherit;
-        border-right-style: inherit;
-        border-top-style: inherit;
-        border-bottom-style: inherit;
-        border-left-color: inherit;
-        border-right-color: inherit;
-        border-top-color: inherit;
-        border-bottom-color: inherit;
-    }
+/* Sidebar ------------------------------------------------------ */
+.sidebar-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border-radius: 2px;
+  color: hsl(var(--muted-foreground));
+  font-size: 13px;
+  transition: background 120ms, color 120ms;
 }
+.sidebar-link:hover {
+  background: hsl(var(--surface-hover));
+  color: hsl(var(--foreground));
+}
+.sidebar-link.active {
+  background: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+}
+
+/* Ribbon / toolbar --------------------------------------------- */
+.ribbon-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 30px;
+  padding: 0 10px;
+  border: 1px solid hsl(var(--border));
+  background: white;
+  color: hsl(var(--foreground));
+  font-size: 12.5px;
+  font-weight: 500;
+  border-radius: 2px;
+  transition: background 120ms, border-color 120ms;
+}
+.ribbon-button:hover:not(:disabled) {
+  background: hsl(var(--surface));
+  border-color: hsl(var(--foreground));
+}
+.ribbon-button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.ribbon-button.primary {
+  background: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+  border-color: hsl(var(--primary));
+}
+.ribbon-button.primary:hover:not(:disabled) {
+  background: #262626;
+}
+.ribbon-button.danger {
+  border-color: hsl(var(--destructive));
+  color: hsl(var(--destructive));
+}
+
+/* Status bar --------------------------------------------------- */
+.status-bar {
+  border-top: 1px solid hsl(var(--border));
+  background: hsl(var(--surface));
+  padding: 4px 12px;
+  font-size: 11.5px;
+  color: hsl(var(--muted-foreground));
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+/* Chips -------------------------------------------------------- */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 1px 8px;
+  font-size: 11px;
+  font-weight: 600;
+  border-radius: 999px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.chip-ok    { background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; }
+.chip-warn  { background: #fffbeb; color: #92400e; border: 1px solid #fde68a; }
+.chip-err   { background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; }
+.chip-info  { background: #eff6ff; color: #1e40af; border: 1px solid #bfdbfe; }
+.chip-muted { background: hsl(var(--surface)); color: hsl(var(--muted-foreground)); border: 1px solid hsl(var(--border)); }
+
+/* Scrollbar (subtle) ------------------------------------------ */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-thumb { background: #d4d4d4; border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: #a3a3a3; }
+::-webkit-scrollbar-track { background: transparent; }
+
+/* Login page --------------------------------------------------- */
+.login-shell {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 460px;
+  background: white;
+}
+.login-hero {
+  background: #0a0a0a;
+  color: white;
+  padding: 48px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  overflow: hidden;
+}
+.login-hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+  background-size: 32px 32px;
+  pointer-events: none;
+}
+
+/* Timetable Editor grid ---------------------------------------- */
+.tt-editor {
+  display: grid;
+  gap: 1px;
+  background: hsl(var(--border));
+  border: 1px solid hsl(var(--border));
+}
+.tt-editor .tt-cell {
+  background: white;
+  padding: 8px;
+  min-height: 62px;
+  font-size: 12px;
+  position: relative;
+}
+.tt-editor .tt-cell.header {
+  background: hsl(var(--surface));
+  font-weight: 600;
+  text-align: center;
+  min-height: 34px;
+}
+.tt-editor .tt-cell.locked::after {
+  content: "";
+  position: absolute;
+  top: 3px; right: 3px;
+  width: 6px; height: 6px;
+  background: #000;
+  border-radius: 999px;
+}
+.tt-editor .tt-cell.conflict {
+  background: #fef2f2;
+  box-shadow: inset 0 0 0 2px hsl(var(--destructive));
+}
+.tt-editor .tt-cell.selected {
+  box-shadow: inset 0 0 0 2px #000;
+}
+.tt-editor .tt-cell.drop-target {
+  background: #eff6ff;
+}
+
+/* Card / panel ------------------------------------------------- */
+.panel {
+  background: white;
+  border: 1px solid hsl(var(--border));
+  border-radius: 2px;
+}
+.panel-header {
+  padding: 10px 14px;
+  border-bottom: 1px solid hsl(var(--border));
+  background: hsl(var(--surface));
+  font-weight: 600;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.panel-body { padding: 14px; }
+
+.divider-y > * + * { border-top: 1px solid hsl(var(--border)); }
